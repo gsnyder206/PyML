@@ -21,6 +21,7 @@ import os
 import scipy
 from scipy.sparse.linalg import eigsh
 from sklearn.ensemble import RandomForestClassifier
+import pickle
 
 
 def whiten(data, A_basis=None):
@@ -102,7 +103,7 @@ class PCA:
         return
 
 class pcV:
-    def __init__(self,data,A_pcv):
+    def __init__(self,data):
         '''
         Compute a Principal Component analysis p for a data set
 
@@ -121,7 +122,9 @@ class pcV:
         X: matrix
         Principal Component Coordinates
         '''
-
+        with open('npmorph_f125w_candels.txt', 'rb') as handle:
+            A_pcv = pickle.loads(handle.read())
+        
         whiten_data = whiten(data,A_basis=A_pcv)
         A_white = whiten(A_pcv)
         pc1 = PCA(A_white)
