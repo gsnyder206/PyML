@@ -1,0 +1,31 @@
+Metadata-Version: 1.1
+Name: PyML
+Version: 0.1.0a1
+Summary: Machine Learning functions: PCA, Diffusion Mapping, Random Forest, Convex Hull, etc.
+Home-page: https://github.com/mikpeth/PyML
+Author: Michael Peth
+Author-email: mikepeth@jhu.edu
+License: MIT
+Description: PyML
+        =======================
+        
+        from PyML import machine as ml
+        from PyML import convexhullclassifier as cvx
+        
+        PCA usage:
+        pc = ml.PCA(data) #if you want to calculate eigenvectors
+        pc = ml.pcV(data) #If you want to use eigenvectors calculated for 1.4 < z < 2 galaxies
+        
+        Convex Hull usuage:
+        groups = cvx.convexHullClassifier(pc.X)
+        
+        Random Forest usage:
+Keywords: machinelearning pca convexhull
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7

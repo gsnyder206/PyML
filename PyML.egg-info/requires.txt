@@ -1,0 +1,6 @@
+scipy
+numpy
+pyfits
+pickle
+scikit-learn
+matplotlib

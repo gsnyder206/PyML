@@ -1,0 +1,13 @@
+DESCRIPTION.rst
+MANIFEST.in
+README.rst
+setup.cfg
+setup.py
+PyML/convexhullclassifier.py
+PyML/machinelearning.py
+PyML.egg-info/PKG-INFO
+PyML.egg-info/SOURCES.txt
+PyML.egg-info/dependency_links.txt
+PyML.egg-info/entry_points.txt
+PyML.egg-info/requires.txt
+PyML.egg-info/top_level.txt
