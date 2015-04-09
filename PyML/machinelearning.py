@@ -16,8 +16,8 @@ __email__ = "mikepeth@pha.jhu.edu"
 
 from numpy import *
 import os
-import pyfits
-from pygoods import *
+#import pyfits
+#from pygoods import *
 import scipy
 from scipy.sparse.linalg import eigsh
 from sklearn.ensemble import RandomForestClassifier
@@ -229,76 +229,6 @@ def morphologySelection(catalog,parameters):
 
     return A
         
-    
-
-
-## def randomForest(catalog,data,niter=1000,classify='mergers'):
-##     """
-##     Parameters
-##     ----------
-##     data:Matrix [nsample,nfeatures]
-
-##     classify: String
-##     Determines the type of classification forest to make
-
-##     Output
-##     ----------
-##     labels:Array [nsample]
-##     - Labels corresponding to classifications you wish to make (i.e. 0=non-merger, 1=merger)
-
-##     """
-
-##     if classify=='mergers':
-##         merger_idx = where((catalog['MERGER'] > 0.5))[0]
-##         labels = zeros(len(catalog['MERGER']))
-##         labels[merger_idx] = 1
-
-##     if classify=='irr':
-##         irr_idx = where((catalog['IRR']  >= 2/3.))[0]
-##         labels = zeros(len(catalog['IRR']))
-##         labels[irr_idx] = 1
-        
-##     if classify=='morph':
-##         print len(catalog['disk'.upper()])
-##         disks_class = where((catalog['disk'.upper()] >= 2/3.) & (catalog['spheroid'.upper()]  < 2/3.))[0]
-##         print len(disks_class), " Disks"
-##         spheroid_class = where((catalog['spheroid'.upper()]  >= 2/3.) & (catalog['disk'.upper()]  < 2/3.))[0]
-##         print len(spheroid_class), " Spheroids"
-##         irregular_class =  where((catalog['irr'.upper()]  >= 2/3.) & (catalog['disk'.upper()]  < 2/3.) & (catalog['spheroid'.upper()] < 2/3.))[0]
-##         print len(irregular_class), " Irregulars"
-##         disk_sph_class =  where((catalog['disk'.upper()]  >= 2/3.) & (catalog['spheroid'.upper()]  >= 2/3.))[0]
-##         print len(disk_sph_class), " Disk+Sphs"
-##         labels = zeros(len(catalog['MERGER']))
-##         labels[disks_class] = 1
-##         labels[spheroid_class] = 2
-##         labels[irregular_class] = 3
-##         labels[disk_sph_class] = 4
-        
-##     if classify=='weird':
-##         weird_idx = where((catalog['IRR']  >= 2/3.) |(catalog['MERGER'] > 0.5) | (catalog['ASYM'] > 0.5) | (catalog['INT1'] > 0.5) | (catalog['INT2'] > 0.5))[0]
-##         labels = zeros(len(catalog['MERGER']))
-##         labels[weird_idx] = 1
-
-##     if classify=='clumpy':
-##         clumpy_class = where((catalog['c1p0'.upper()] > 0.5) | (catalog['c2p0'.upper()] > 0.5) | (catalog['c1p1'.upper()] > 0.5) | \
-## 					       (catalog['c1p2'.upper()] > 0.5) | (catalog['c2p1'.upper()] > 0.5) | (catalog['c2p2'.upper()] > 0.5))[0]
-##         labels = zeros(len(catalog['MERGER']))
-##         labels[clumpy_class] = 1
-
-##     rf_importance = zeros(len(data[0]))
-##     rf_importance_std = zeros((len(data[0]),niter))
-##     for ni in range(niter):
-##         clf = RandomForestClassifier(n_estimators=10)
-##         rf = clf.fit(data,labels)
-##         rf_importance+=rf.feature_importances_
-##         rf_importance_std[:,ni] = rf.feature_importances_
-
-##     rf_importance/=niter
-##     rf_error = std(rf_importance_std)
-
-## #    return rf, labels, rf_importance
-##    , rf_error
-##    return rf_importance, rf_error
 
 class randomForest:
     def __init__(self, catalog,train,test=None,niter=1000,classify='mergers'):
@@ -434,50 +364,4 @@ def morphTrainTest(catalog,classify='morph'):
     else:
         pass
 
-    # d_idx   = where((catalog['disk'.upper()] >= 2/3.) & (catalog['spheroid'.upper()]  < 2/3.))[0]
-    # sph_idx = where((catalog['spheroid'.upper()]  >= 2/3.) & (catalog['disk'.upper()]  < 2/3.))[0]
-    # irr_idx = where((catalog['irr'.upper()]  >= 2/3.) & (catalog['disk'.upper()]  < 2/3.) & (catalog['spheroid'.upper()] < 2/3.))[0]
-    # dirr_idx = where((catalog['irr'.upper()]  >= 2/3.) & (catalog['disk'.upper()]  >= 2/3.) & (catalog['spheroid'.upper()] < 2/3.))[0]
-    # ds_idx  = where((catalog['disk'.upper()]  >= 2/3.) & (catalog['spheroid'.upper()]  >= 2/3.))[0]
-
-    # labels = zeros(len(catalog['DISK']))
-    # labels[d_idx] = 1
-    # labels[sph_idx] = 2
-    # labels[irr_idx] = 3
-    # labels[ds_idx] = 4
-    # labels[dirr_idx] = 5
-    # targetNames = array(['other','disk','spheroid','irregular','disk+sph','irr-disk'])
     return labels
-
-
-def multiRandomForest():
-    #If we are using training set or actually applying the forest to new data, need new different sized arrays
-    # if test == None:
-    #     rf_labels =  zeros((shape(train)[0]))
-    #     rf_labels_prob =  zeros((shape(train)[0],2))
-    #     ngaltot = shape(train)[0]
-    # else:
-    #     rf_labels =  zeros((shape(test)[0]))
-    #     rf_labels_prob =  zeros((shape(test)[0],len(unique(labels))))
-    #     ngaltot = shape(test)[0]
-    # #These depend on the number of features used, which doesnt change
-    # rf_importance = zeros(len(train[0]))
-    # rf_importance_std = zeros((len(train[0]),niter))
-    # #Perform the random forest classification N times, to eliminate chance classifications
-    # for ni in range(niter):
-    #     clf = RandomForestClassifier(n_estimators=10)
-    #     rf = clf.fit(train,labels)
-    #     rf_importance+=rf.feature_importances_
-    #     rf_importance_std[:,ni] = rf.feature_importances_
-    #     if test == None:
-    #         rf_labels_prob += rf.predict_proba(train)
-    #     if test != None:
-    #         rf_labels_prob += rf.predict_proba(test)
-            
-    # rf_labels_prob = rf_labels_prob/float(niter) #Calculate average probabilities
-    # for ngal in range(ngaltot):
-    #     rf_labels[ngal] = min(where(rf_labels_prob[ngal] == max(rf_labels_prob[ngal]))[0])
-        
-    # rf_importance= rf_importance/float(niter)
-    # rf_error = std(rf_importance_std)
-    pass

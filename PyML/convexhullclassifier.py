@@ -9,7 +9,7 @@ and impossible for groups with many points (aka Group 6)
 """
 
 from numpy import *
-import pyfits
+#import pyfits
 #from pygoods import *
 from sklearn.cluster import AgglomerativeClustering 
 import scipy
