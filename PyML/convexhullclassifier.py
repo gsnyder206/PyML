@@ -78,6 +78,7 @@ def convexHullClass(data,radius=1e-6):
     #Select PCs from dictionary key 'X' and groups from key 'label'
     X = pc_j_dict['X']
     label = pc_j_dict['label']
+    clusters = 10
     
     group_label = zeros(int(len(data)))-1 #Array defining the new group labels
     distance_sq = zeros(clusters) #Array defining the distances to different groups, refreshed for every galaxy. Used in case of ties
