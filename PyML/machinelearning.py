@@ -57,6 +57,34 @@ def whiten(data, A_basis=None):
         whiten_data[:,p]  = (data[:,p] - mu[p])/wvar[p]
     return whiten_data
 
+def morphMatrix(data,band='J'):
+    '''
+    Create an Nxk matrix to be used for PCA
+        ['C','M20','G','A','M','I','D']
+
+    Parameters
+    ----------
+    data: FITS rec or dictionary
+    Input catalog
+
+
+    Returns
+    -------
+    new_matrix: matrix
+        Nxk matrix to be used for PCA
+    '''
+
+    new_matrix = zeros((len(data['G_%s' % band],7)))
+
+    new_matrix[:,0] = data['C_%s' % band]
+    new_matrix[:,1] = data['M20_%s' % band]
+    new_matrix[:,2] = data['G_%s' % band]
+    new_matrix[:,3] = data['A_%s' % band]
+    new_matrix[:,4] = data['MPRIME_%s' % band]
+    new_matrix[:,5] = data['I_%s' % band]
+    new_matrix[:,6] = data['D_%s' % band]
+    return new_matrix
+
 
 class PCA:
     def __init__(self, data):
