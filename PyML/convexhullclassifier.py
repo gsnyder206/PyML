@@ -89,7 +89,7 @@ def convexHullClass(data,radius=1e-6):
                 #print "Galaxy ", ngal, " is an outlier"
                 continue
         else: #If galaxy is not an "outlier" proceed to check which group it belongs
-            for n in unique(labels):
+            for n in unique(label):
                 labeln = where(label == n)[0]
                 
 
