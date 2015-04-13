@@ -119,7 +119,7 @@ def convexHullClass(data,radius=1e-6):
                 #Determine the distance to the "center" of all convex hulls and the closest is used to break ties
                 distance_sq = zeros(len(group_number))
                 for nn in range(len(group_number)):
-                    eq_label = where(label == group_number[nn])
+                    eq_label = where(label == group_number[nn])[0]
 
                     galaxy = data[ngal,:].reshape((1,len(data[0])))
                     new_points = concatenate((X[eq_label],galaxy))
