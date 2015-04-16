@@ -4,4 +4,4 @@ include DESCRIPTION.rst
 # recursive-include tests *
 
 include *.py
-include *.txt
+include data/*.txt

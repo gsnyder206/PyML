@@ -22,6 +22,7 @@ import scipy
 from scipy.sparse.linalg import eigsh
 from sklearn.ensemble import RandomForestClassifier
 import pickle
+import PyML
 
 
 def whiten(data, A_basis=None):
@@ -74,7 +75,7 @@ def morphMatrix(data,band='J'):
         Nxk matrix to be used for PCA
     '''
 
-    new_matrix = zeros((len(data['G_%s' % band],7)))
+    new_matrix = zeros((len(data['G_%s' % band]),7))
 
     new_matrix[:,0] = data['C_%s' % band]
     new_matrix[:,1] = data['M20_%s' % band]
@@ -150,7 +151,8 @@ class pcV:
         X: matrix
         Principal Component Coordinates
         '''
-        with open('npmorph_f125w_candels.txt', 'rb') as handle:
+        npmorph_path=PyML.__path__[0]+os.path.sep+"npmorph_f125w_candels.txt" 
+        with open(npmorph_path, 'rb') as handle:
             A_pcv = pickle.loads(handle.read())
         
         whiten_data = whiten(data,A_basis=A_pcv)

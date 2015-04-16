@@ -12,3 +12,5 @@ PyML.egg-info/dependency_links.txt
 PyML.egg-info/entry_points.txt
 PyML.egg-info/requires.txt
 PyML.egg-info/top_level.txt
+data/PC_f125w_candels.txt
+data/npmorph_f125w_candels.txt
