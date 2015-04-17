@@ -151,7 +151,7 @@ class pcV:
         X: matrix
         Principal Component Coordinates
         '''
-        npmorph_path=PyML.__path__[0]+os.path.sep+"npmorph_f125w_candels.txt" 
+        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt" 
         with open(npmorph_path, 'rb') as handle:
             A_pcv = pickle.loads(handle.read())
         

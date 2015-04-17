@@ -74,7 +74,7 @@ def convexHullClass(data,radius=1e-6):
     """
     
     #Define groups using basis data from 1.4 < z < 2
-    pc_path=PyML.__path__[0]+os.path.sep+'pc_f125w_candels.txt'
+    pc_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+'pc_f125w_candels.txt'
     with open(pc_path, 'rb') as handle:
         pc_j_dict = pickle.loads(handle.read())
     

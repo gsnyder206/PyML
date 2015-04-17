@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.2a2',
+    version='0.1.3a1',
 
     description='Machine Learning functions: PCA, Diffusion Mapping, Random Forest, Convex Hull, etc.',
     long_description=long_description,
@@ -70,6 +70,8 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=['PyML'], #find_packages(exclude=['contrib', 'docs', 'tests*']),
+    package_dir={'PyML': 'PyML'},
+    package_data={'PyML': ['data/*.txt']},
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
@@ -89,9 +91,9 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    data_file=[
-        ('data', ['PC_f125w_candels.txt','npmorph_f125w_candels.txt'])
-    ],
+    #data_file=[
+    #    ('data', ['PC_f125w_candels.txt','npmorph_f125w_candels.txt'])
+    #],
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
