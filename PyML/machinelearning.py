@@ -25,7 +25,7 @@ import pickle
 import PyML
 
 
-def whiten(data, A_basis=None):
+def whiten(data): #, A_basis=None):
     '''
     Compute a Principal Component analysis p for a data set
 
@@ -46,12 +46,12 @@ def whiten(data, A_basis=None):
     
     
     
-    if A_basis == None:
-        mu = mean(data,axis=0)
-        wvar = std(data,axis=0)
-    else:
-        mu = mean(A_basis,axis=0)
-        wvar = std(A_basis,axis=0)
+    #if A_basis == None:
+    mu = mean(data,axis=0)
+    wvar = std(data,axis=0)
+    #else:
+    #    mu = mean(A_basis,axis=0)
+    #    wvar = std(A_basis,axis=0)
 
     whiten_data = zeros(shape(data))
     for p in range(len(mu)):
@@ -155,7 +155,7 @@ class pcV:
         with open(npmorph_path, 'rb') as handle:
             A_pcv = pickle.loads(handle.read())
         
-        whiten_data = whiten(data,A_basis=A_pcv)
+        whiten_data = whiten(data) #,A_basis=A_pcv)
         A_white = whiten(A_pcv)
         pc1 = PCA(A_white)
         pc = zeros(shape(whiten_data))
