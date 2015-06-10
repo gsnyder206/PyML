@@ -169,6 +169,41 @@ class pcV:
         self.values = pc1.values
         return
 
+class pcVFix:
+    def __init__(self,data):
+        '''
+        Compute a Principal Component analysis p for a data set
+
+        Parameters
+        ----------
+        data: matrix
+        Input data (Nxk): N objects by k features
+
+        A_pcv: Matrix
+        Data (NxK) with Eigenvector solutions used to project data
+
+        Returns
+        -------
+        Structure with the following keys:
+
+        X: matrix
+        Principal Component Coordinates
+        '''
+        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"PC_f125w_candels.txt" 
+        with open(npmorph_path, 'rb') as handle:
+            pc1 = pickle.loads(handle.read())
+        
+        whiten_data = whiten(data)
+        pc = zeros(shape(whiten_data))
+        
+        for i in range(len(whiten_data[0])):
+             for j in range(len(whiten_data[0])):
+                pc[:,i] = pc[:,i] + pc1.vectors[i][j]*whiten_data[:,j]
+
+        self.X = pc
+        self.vectors = pc1.vectors 
+        self.values = pc1.values
+        return
 
 class diffusionMap:
     def __init__(self, data, epsilon=0.2,delta=1e-10,n_eig=100):
