@@ -10,7 +10,7 @@ __author__ = "Michael Peth, Peter Freeman"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth", "Peter Freeman"]
 __license__ = "GPL"
-__version__ = "0.1.0"
+__version__ = "0.1.4"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 
@@ -25,7 +25,7 @@ import pickle
 import PyML
 
 
-def whiten(data, A_basis=None):
+def whiten(data, A_basis=False):
     '''
     Compute a Principal Component analysis p for a data set
 
@@ -46,12 +46,14 @@ def whiten(data, A_basis=None):
     
     
     
-    if A_basis == None:
+    if A_basis == False:
         mu = mean(data,axis=0)
         wvar = std(data,axis=0)
     else:
-        mu = mean(A_basis,axis=0)
-        wvar = std(A_basis,axis=0)
+        with open('candels_whiten_j_avg_std.txt', 'rb') as handle:
+            a_basis = pickle.loads(handle.read())
+        mu = a_basis.mean
+        wvar = a_basis.std
 
     whiten_data = zeros(shape(data))
     for p in range(len(mu)):
@@ -155,7 +157,7 @@ class pcV:
         with open(npmorph_path, 'rb') as handle:
             A_pcv = pickle.loads(handle.read())
         
-        whiten_data = whiten(data,A_basis=A_pcv)
+        whiten_data = whiten(data) #,A_basis=A_pcv)
         A_white = whiten(A_pcv)
         pc1 = PCA(A_white)
         pc = zeros(shape(whiten_data))
@@ -169,6 +171,41 @@ class pcV:
         self.values = pc1.values
         return
 
+class pcVFix:
+    def __init__(self,data):
+        '''
+        Compute a Principal Component analysis p for a data set
+
+        Parameters
+        ----------
+        data: matrix
+        Input data (Nxk): N objects by k features
+
+        A_pcv: Matrix
+        Data (NxK) with Eigenvector solutions used to project data
+
+        Returns
+        -------
+        Structure with the following keys:
+
+        X: matrix
+        Principal Component Coordinates
+        '''
+        npmorph_path="PC_f125w_candels.txt" 
+        with open(npmorph_path, 'rb') as handle:
+            pc1 = pickle.loads(handle.read())
+        
+        whiten_data = whiten(data,A_basis=True)
+        pc = zeros(shape(whiten_data))
+        
+        for i in range(len(whiten_data[0])):
+             for j in range(len(whiten_data[0])):
+                pc[:,i] = pc[:,i] + pc1['vectors'][i][j]*whiten_data[:,j]
+
+        self.X = pc
+        self.vectors = pc1['vectors']
+        self.values = pc1['values']
+        return
 
 class diffusionMap:
     def __init__(self, data, epsilon=0.2,delta=1e-10,n_eig=100):

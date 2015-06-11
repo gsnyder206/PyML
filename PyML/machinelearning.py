@@ -200,11 +200,11 @@ class pcVFix:
         
         for i in range(len(whiten_data[0])):
              for j in range(len(whiten_data[0])):
-                pc[:,i] = pc[:,i] + pc1.vectors[i][j]*whiten_data[:,j]
+                pc[:,i] = pc[:,i] + pc1['vectors'][i][j]*whiten_data[:,j]
 
         self.X = pc
-        self.vectors = pc1.vectors 
-        self.values = pc1.values
+        self.vectors = pc1['vectors']
+        self.values = pc1['values']
         return
 
 class diffusionMap:
