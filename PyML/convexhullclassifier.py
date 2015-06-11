@@ -23,7 +23,7 @@ __author__ = "Michael Peth"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth"]
 __license__ = "GPL"
-__version__ = "0.1.0"
+__version__ = "0.1.4"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 

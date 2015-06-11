@@ -10,7 +10,7 @@ __author__ = "Michael Peth, Peter Freeman"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth", "Peter Freeman"]
 __license__ = "GPL"
-__version__ = "0.1.0"
+__version__ = "0.1.4"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 
@@ -25,7 +25,7 @@ import pickle
 import PyML
 
 
-def whiten(data): #, A_basis=None):
+def whiten(data, A_basis=False):
     '''
     Compute a Principal Component analysis p for a data set
 
@@ -46,12 +46,14 @@ def whiten(data): #, A_basis=None):
     
     
     
-    #if A_basis == None:
-    mu = mean(data,axis=0)
-    wvar = std(data,axis=0)
-    #else:
-    #    mu = mean(A_basis,axis=0)
-    #    wvar = std(A_basis,axis=0)
+    if A_basis == False:
+        mu = mean(data,axis=0)
+        wvar = std(data,axis=0)
+    else:
+        with open('candels_whiten_j_avg_std.txt', 'rb') as handle:
+            a_basis = pickle.loads(handle.read())
+        mu = a_basis.mean
+        wvar = a_basis.std
 
     whiten_data = zeros(shape(data))
     for p in range(len(mu)):
@@ -189,11 +191,11 @@ class pcVFix:
         X: matrix
         Principal Component Coordinates
         '''
-        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"PC_f125w_candels.txt" 
+        npmorph_path="PC_f125w_candels.txt" 
         with open(npmorph_path, 'rb') as handle:
             pc1 = pickle.loads(handle.read())
         
-        whiten_data = whiten(data)
+        whiten_data = whiten(data,A_basis=True)
         pc = zeros(shape(whiten_data))
         
         for i in range(len(whiten_data[0])):
