@@ -52,8 +52,8 @@ def whiten(data, A_basis=False):
     else:
         with open('candels_whiten_j_avg_std.txt', 'rb') as handle:
             a_basis = pickle.loads(handle.read())
-        mu = a_basis.mean
-        wvar = a_basis.std
+        mu = a_basis['mean']
+        wvar = a_basis['std']
 
     whiten_data = zeros(shape(data))
     for p in range(len(mu)):
