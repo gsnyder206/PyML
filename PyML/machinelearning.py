@@ -10,7 +10,7 @@ __author__ = "Michael Peth, Peter Freeman"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth", "Peter Freeman"]
 __license__ = "GPL"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 
@@ -75,6 +75,8 @@ def morphMatrix(data,band='J'):
     -------
     new_matrix: matrix
         Nxk matrix to be used for PCA
+
+    Re-write to eliminate function
     '''
 
     new_matrix = zeros((len(data['G_%s' % band]),7))
