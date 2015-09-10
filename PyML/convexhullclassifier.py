@@ -23,7 +23,7 @@ __author__ = "Michael Peth"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth"]
 __license__ = "GPL"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@jhu.edu"
 
@@ -154,7 +154,7 @@ def convexHullClass(data,radius=1e-2):
                         group_label[ngal] = argmin(dist) #If galaxy isn't grouped after PC1 then use closest group
                         groupALL.append(dist)
                         #group[group_number] = 1e6
-                        print "Galaxy Breaks ", ngal
+                        #print "Galaxy Breaks ", ngal
                         #continue
                         
                     else:
@@ -184,7 +184,7 @@ def convexHullClass(data,radius=1e-2):
                         group_number = where(group == max(group))[0]
                     
                         if len(group_number) > 1: #In case there is a tie for the group most classified into
-                            print "Galaxy ", ngal
+                            #print "Galaxy ", ngal
                             var_new = zeros(len(group_number))
                             
                             #Determine the distance to the "center" of all convex hulls and the closest is used to break ties
@@ -217,7 +217,7 @@ def convexHullClass(data,radius=1e-2):
                             groupALL.append(group)
                             group_label[ngal] = group_number[0]
             
-    return array(group_label,'i'), groupALL
+    return array(group_label,'i') #, groupALL
 
 # def convexHullClass(data,radius=1e-6):
 #     #from matplotlib import nxutils
