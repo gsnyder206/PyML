@@ -10,7 +10,7 @@ __author__ = "Michael Peth, Peter Freeman"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth", "Peter Freeman"]
 __license__ = "GPL"
-__version__ = "0.1.5"
+__version__ = "0.2.3"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 
@@ -79,12 +79,12 @@ def morphMatrix(data,band='J'):
     Re-write to eliminate function
     '''
 
-    new_matrix = zeros((len(data['G_%s' % band]),7))
+    new_matrix = zeros((len(data['GINI_%s' % band]),7))
 
     new_matrix[:,0] = data['C_%s' % band]
     new_matrix[:,1] = data['M20_%s' % band]
-    new_matrix[:,2] = data['G_%s' % band]
-    new_matrix[:,3] = data['A_%s' % band]
+    new_matrix[:,2] = data['GINI_%s' % band]
+    new_matrix[:,3] = data['ASYM_%s' % band]
     new_matrix[:,4] = data['MPRIME_%s' % band]
     new_matrix[:,5] = data['I_%s' % band]
     new_matrix[:,6] = data['D_%s' % band]

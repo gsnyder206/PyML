@@ -23,7 +23,7 @@ __author__ = "Michael Peth"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth"]
 __license__ = "GPL"
-__version__ = "0.2.1"
+__version__ = "0.2.3"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@jhu.edu"
 
@@ -31,7 +31,10 @@ def clusterCentroids(X,labels):
     m = []
     for i in range(10):
         grp = where(labels==i)[0]
-        m += [median(X[grp,:],axis=0)]
+        if len(grp) > 0:
+            m += [median(X[grp,:],axis=0)]
+        else:
+            m += [zeros(7)+10000.]
     return m
         
 def in_hull(p, hull):
