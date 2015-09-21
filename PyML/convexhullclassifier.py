@@ -92,7 +92,7 @@ def convexHullClass(data,radius=1e-2):
     ev_weight = pc_j_dict['values']
     ev_weight_normalized = ev_weight[0]*ev_weight[0]
     clusters = 10
-    groupALL = []
+    #groupALL = []
 
     clusterCenters = clusterCentroids(X,label)
     
@@ -104,7 +104,7 @@ def convexHullClass(data,radius=1e-2):
                 group_label[ngal] = -1 #outliers are put into group =-1, replaces groups 3,7
                 #print "Galaxy ", ngal, " is an outlier"
                 #continue
-                groupALL.append(group)
+                #groupALL.append(group_label)
         else: #If galaxy is not an "outlier" proceed to check which group it belongs
             for n in range(clusters): #len(unique(label))):
                 #groupn = unique(label)[n]
@@ -121,7 +121,7 @@ def convexHullClass(data,radius=1e-2):
                 group_label[ngal] = -1 #outliers are put into group =-1, replaces groups 3,7
                 print "Galaxy ", ngal, " is an outlier"
                 #continue
-                groupALL.append(dist)
+                #groupALL.append(dist)
             else:
                 multiple_groups_possible = where(groups2 < 8)[0] #If the new distance is smaller than some arbitrary value do convex hull test
                 #print multiple_groups_possible
@@ -130,7 +130,7 @@ def convexHullClass(data,radius=1e-2):
                     #print "Only 1 Group Galaxy ", ngal
                     #group_number = [argmin(dist)]
                     group_label[ngal] = argmin(dist)
-                    groupALL.append(dist)
+                    #groupALL.append(dist)
                 else:       
                     group = zeros(clusters) 
                     for n in multiple_groups_possible: #Only look in convex hulls that are close to data point #range(clusters): #len(unique(label))):
@@ -155,7 +155,7 @@ def convexHullClass(data,radius=1e-2):
 
                     if sum(group) == 0:
                         group_label[ngal] = argmin(dist) #If galaxy isn't grouped after PC1 then use closest group
-                        groupALL.append(dist)
+                        #groupALL.append(dist)
                         #group[group_number] = 1e6
                         #print "Galaxy Breaks ", ngal
                         #continue
@@ -207,7 +207,7 @@ def convexHullClass(data,radius=1e-2):
                                 distance_sq[7] = 1000.0
 
                             group_label[ngal] = argmin(distance_sq)
-                            groupALL.append(distance_sq)
+                            #groupALL.append(distance_sq)
                             # if len(where(distance_sq == min(distance_sq))[0]) == 1:
                             #     group_label[ngal] = group_number[where(distance_sq == min(distance_sq))[0]]
                             # else: #In the off chance the galaxy is equally close to two groups, labeled as group -2
@@ -217,7 +217,7 @@ def convexHullClass(data,radius=1e-2):
                         #if len(group_number) == 1:
                         #print "ayyyy lmao"
                         else:
-                            groupALL.append(group)
+                            #groupALL.append(group)
                             group_label[ngal] = group_number[0]
             
     return array(group_label,'i') #, groupALL
