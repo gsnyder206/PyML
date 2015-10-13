@@ -10,7 +10,7 @@ __author__ = "Michael Peth, Peter Freeman"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth", "Peter Freeman"]
 __license__ = "GPL"
-__version__ = "0.2.3"
+__version__ = "0.2.5"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 
