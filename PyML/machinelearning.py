@@ -90,6 +90,32 @@ def morphMatrix(data,band='J'):
     new_matrix[:,6] = data['D_%s' % band]
     return new_matrix
 
+def dataMatrix(data,parameter_list):
+    '''
+    Create an Nxk matrix to be used for PCA/Random Forest
+
+    Parameters
+    ----------
+    data:           FITS rec or dictionary
+                    Input catalog
+    parameter_list: list of parameters to include
+
+
+    Returns
+    -------
+    new_matrix: matrix
+        Nxk matrix to be used for PCA
+
+    '''
+
+    new_matrix = zeros((len(data[parameter_list[0]]),len(parameter_list)))
+
+    for pl in range(len(parameter_list)):
+        new_matrix[:,pl] = data[parameter_list[pl]]
+
+    return new_matrix
+
+
 
 class PCA:
     def __init__(self, data):
