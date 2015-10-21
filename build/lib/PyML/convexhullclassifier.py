@@ -28,6 +28,9 @@ __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@jhu.edu"
 
 def clusterCentroids(X,labels):
+    """
+    Find the centeroids for each group following the PCA
+    """
     m = []
     for i in range(10):
         grp = where(labels==i)[0]
