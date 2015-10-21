@@ -10,7 +10,7 @@ __author__ = "Michael Peth, Peter Freeman"
 __copyright__ = "Copyright 2015"
 __credits__ = ["Michael Peth", "Peter Freeman"]
 __license__ = "GPL"
-__version__ = "0.2.5"
+__version__ = "0.2.6"
 __maintainer__ = "Michael Peth"
 __email__ = "mikepeth@pha.jhu.edu"
 
@@ -222,7 +222,8 @@ class pcV:
         Principal Component Coordinates
         '''
         #npmorph_path="PC_f125w_candels.txt" 
-        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt"
+        #npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt"
+        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"PC_f125w_candels.txt"
         with open(npmorph_path, 'rb') as handle:
             pc1 = pickle.loads(handle.read())
         

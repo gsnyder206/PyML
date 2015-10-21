@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.2.5a1',
+    version='0.2.6a1',
 
     description='Machine Learning functions: PCA, Diffusion Mapping, Random Forest, Convex Hull, etc.',
     long_description=long_description,
