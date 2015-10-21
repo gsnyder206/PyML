@@ -10,13 +10,13 @@ use these steps to project morphological data onto predefined PC eigenvectors an
 on the groups defined in Peth et al. 2015:
 ::
 
-from PyML import machinelearning as pyml
+	from PyML import machinelearning as pyml
 
-from PyML import convexhullclassifier as cvx
+	from PyML import convexhullclassifier as cvx
 
 
-npmorph = pyml.dataMatrix(catalog,['C_J','M20_J','GINI_J','ASYM_J','MPRIME_J','I_J','D_J']) #Statistics MUST be in this order
+	npmorph = pyml.dataMatrix(catalog,['C_J','M20_J','GINI_J','ASYM_J','MPRIME_J','I_J','D_J']) #Statistics MUST be in this order
 
-pc = pyml.pcV(npmorph)																		#Principal Components
+	pc = pyml.pcV(npmorph)																		#Principal Components
 
-groups  = cvx.convexHullClass(pc.X)															#Groups using convex hull classifier
+	groups  = cvx.convexHullClass(pc.X)															#Groups using convex hull classifier
