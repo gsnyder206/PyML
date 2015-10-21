@@ -27,12 +27,12 @@ import PyML
 
 def whiten(data, A_basis=False):
     '''
-    Compute a Principal Component analysis p for a data set
+    Whitens the input data set by subtracting the mean and normalizing by the standard deviation for each feature
 
     Parameters
     ----------
     data: matrix
-    Input data (Nxk): N objects by k features, whitened (i.e. average subtracted and stddev scaled)
+    Input data (Nxk): N objects by k features
 
 
     Returns
@@ -100,6 +100,8 @@ def dataMatrix(data,parameter_list):
                     Input catalog
     parameter_list: list of parameters to include
 
+    (To use PCs from Peth et al. 2015 use ['C','M20','GINI','ASYM','MPRIME','I','D'] as input parameter list)
+
 
     Returns
     -------
@@ -161,6 +163,44 @@ class PCA:
 
         return
 
+# class pcV:
+#     def __init__(self,data):
+#         '''
+#         Compute a Principal Component analysis p for a data set
+
+#         Parameters
+#         ----------
+#         data: matrix
+#         Input data (Nxk): N objects by k features
+
+#         A_pcv: Matrix
+#         Data (NxK) with Eigenvector solutions used to project data
+
+#         Returns
+#         -------
+#         Structure with the following keys:
+
+#         X: matrix
+#         Principal Component Coordinates
+#         '''
+#         npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt" 
+#         with open(npmorph_path, 'rb') as handle:
+#             A_pcv = pickle.loads(handle.read())
+        
+#         whiten_data = whiten(data) #,A_basis=A_pcv)
+#         A_white = whiten(A_pcv)
+#         pc1 = PCA(A_white)
+#         pc = zeros(shape(whiten_data))
+        
+#         for i in range(len(whiten_data[0])):
+#              for j in range(len(whiten_data[0])):
+#                 pc[:,i] = pc[:,i] + pc1.vectors[i][j]*whiten_data[:,j]
+
+#         self.X = pc
+#         self.vectors = pc1.vectors 
+#         self.values = pc1.values
+#         return
+
 class pcV:
     def __init__(self,data):
         '''
@@ -181,45 +221,8 @@ class pcV:
         X: matrix
         Principal Component Coordinates
         '''
-        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt" 
-        with open(npmorph_path, 'rb') as handle:
-            A_pcv = pickle.loads(handle.read())
-        
-        whiten_data = whiten(data) #,A_basis=A_pcv)
-        A_white = whiten(A_pcv)
-        pc1 = PCA(A_white)
-        pc = zeros(shape(whiten_data))
-        
-        for i in range(len(whiten_data[0])):
-             for j in range(len(whiten_data[0])):
-                pc[:,i] = pc[:,i] + pc1.vectors[i][j]*whiten_data[:,j]
-
-        self.X = pc
-        self.vectors = pc1.vectors 
-        self.values = pc1.values
-        return
-
-class pcVFix:
-    def __init__(self,data):
-        '''
-        Compute a Principal Component analysis p for a data set
-
-        Parameters
-        ----------
-        data: matrix
-        Input data (Nxk): N objects by k features
-
-        A_pcv: Matrix
-        Data (NxK) with Eigenvector solutions used to project data
-
-        Returns
-        -------
-        Structure with the following keys:
-
-        X: matrix
-        Principal Component Coordinates
-        '''
-        npmorph_path="PC_f125w_candels.txt" 
+        #npmorph_path="PC_f125w_candels.txt" 
+        npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt"
         with open(npmorph_path, 'rb') as handle:
             pc1 = pickle.loads(handle.read())
         
@@ -314,19 +317,6 @@ class diffusionMap:
         self.weight = weight
 
         return
-
-def morphologySelection(catalog,parameters):
-
-    A = zeros((len(catalog['RA_J']),len(parameters)))
-
-    npar = 0
-    for param in parameters:
-        #print param
-        A[:,npar] = catalog[param]
-        npar+=1
-
-    return A
-        
 
 class randomForest:
     def __init__(self, catalog,train,test=None,niter=1000,classify='mergers'):
