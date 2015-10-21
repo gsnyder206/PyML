@@ -13,7 +13,8 @@ on the groups defined in Peth et al. 2015:
 	from PyML import machinelearning as pyml
 	from PyML import convexhullclassifier as cvx
 
-	parameters = ['C_J','M20_J','GINI_J','ASYM_J','MPRIME_J','I_J','D_J'] #Statistics MUST be in this order
+	parameters = ['C_J','M20_J','GINI_J','ASYM_J','MPRIME_J','I_J','D_J'] 
+	#Statistics MUST be in this order
 	npmorph = pyml.dataMatrix(catalog,parameters) 
-	pc = pyml.pcV(npmorph)												  #Principal Components
-	groups  = cvx.convexHullClass(pc.X)									  #Groups using convex hull classifier
+	pc = pyml.pcV(npmorph) #Principal Components
+	groups  = cvx.convexHullClass(pc.X)	#Groups using convex hull classifier
