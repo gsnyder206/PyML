@@ -50,7 +50,8 @@ def whiten(data, A_basis=False):
         mu = mean(data,axis=0)
         wvar = std(data,axis=0)
     else:
-        with open('candels_whiten_j_avg_std.txt', 'rb') as handle:
+        whiten_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"candels_whiten_j_avg_std.txt"
+        with open(whiten_path, 'rb') as handle:
             a_basis = pickle.loads(handle.read())
         mu = a_basis['mean']
         wvar = a_basis['std']

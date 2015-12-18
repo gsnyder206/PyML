@@ -1,3 +1,6 @@
+#Non-parametric morphology statistics and PC values for CANDELS (UDS/GOODS-S/COSMOS)
+#galaxies
+#pGX refers to the probability of a galaxy being in group X
 #ID RA DEC C_J ASYM_J M20_J GINI_J M_J I_J D_J LOGMASS PHOTZ GROUP PC1 PC2 PC3 PC4 PC5 PC6 PC7    pGoutlier pG0 pG1 pG2 pG4 pG5 pG6 pG8 pG9 
 370 	  34.226196 	  -5.275881 	               3.590000 	  -0.120000 	  -1.040000 	   0.490000 	               0.043000 	   0.028000 	   0.088000 	  10.570000 	   1.633000 	 4 	0.429329 	-0.002991 	-1.779157 	0.459518 	-0.475094 	0.239760 	1.056023 	  0.00 	  0.00 	  0.00 	  0.02 	  0.72 	  0.06 	  0.05 	  0.00 	  0.14 	
 399 	  34.241684 	  -5.275466 	               3.120000 	   0.060000 	  -1.870000 	   0.600000 	             -99.000000 	   0.002000 	   0.041000 	  10.310000 	   1.471000 	 6 	-2.721240 	-0.197415 	0.585517 	0.760303 	0.223298 	-0.916293 	0.206168 	  0.00 	  0.00 	  0.12 	  0.03 	  0.00 	  0.14 	  0.70 	  0.00 	  0.00 	

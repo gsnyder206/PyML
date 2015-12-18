@@ -14,6 +14,7 @@ PyML.egg-info/requires.txt
 PyML.egg-info/top_level.txt
 PyML/data/CANDELS_morph_pca_dist.txt
 PyML/data/PC_f125w_candels.txt
+PyML/data/candels_whiten_j_avg_std.txt
 PyML/data/npmorph_f125w_candels.txt
 data/PC_f125w_candels.txt
 data/npmorph_f125w_candels.txt
