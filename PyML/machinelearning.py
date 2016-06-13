@@ -212,15 +212,18 @@ class pcV:
         data: matrix
         Input data (Nxk): N objects by k features
 
-        A_pcv: Matrix
-        Data (NxK) with Eigenvector solutions used to project data
-
         Returns
         -------
         Structure with the following keys:
 
         X: matrix
         Principal Component Coordinates
+
+        Default Import
+        -------
+        A_pcv: Matrix
+        Data (NxK) with Eigenvector solutions used to project data (from CANDELS Morphologies)
+
         '''
         #npmorph_path="PC_f125w_candels.txt" 
         #npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt"
