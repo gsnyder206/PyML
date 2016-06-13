@@ -431,6 +431,9 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     iterations: integer
     Number of times to create a random forest instance
 
+    thresh: float
+    Threshold of Predicion Probability used to classify
+
     n_estimators: integer
     Number of trees in forest
 
@@ -452,7 +455,7 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     Output
     ----------
-     - result
+     - result = DataFrame with feature importance and summary statistics determined for every iteration
      - Predicitions = Labels after defining random forest test on ALL data
      - Predicitions_prob = Label probablility after defining random forest test on ALL data
 
@@ -461,11 +464,9 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     d = {}
     rf_mc_df = pd.DataFrame(d)
 
-    #cols = ['PC1','PC2','PC3','PC4','PC5','PC6','PC7','g','m20','mprime','i','d','a','c','gr_col','logMass','ssfr']
     if cols == None:
-            #cols = ['g','m20','mprime','i','d','a','c','gr_col','f_gm20','logMass','ssfr']
-            cols = ['PC1','PC2','PC3','PC4','PC5','PC6','PC7', \
-            'g','m20','mprime','i','d','a','c','gr_col','logMass','ssfr','f_gm20','d_gm20']
+        cols = ['PC1','PC2','PC3','PC4','PC5','PC6','PC7', \
+        'g','m20','mprime','i','d','a','c','gr_col','logMass','ssfr','f_gm20','d_gm20']
 
     import numpy as np
     summaryStatsIters = {'completeness': np.zeros(iterations), 'specificity': np.zeros(iterations),'risk':np.zeros(iterations),\
@@ -487,16 +488,15 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     for i in range(iterations):
         print str(i+1)+'/'+str(iterations)
-        rf_mc = randomForest(df,cols=cols)
+        rf_mc = randomForest(df,cols=cols,n_estimators=n_estimators,max_leaf_nodes=max_leaf_nodes,max_features=max_features,\
+            trainDF=trainDF,testDF=testDF, traininglabel=traininglabel)
         predictions[:,i] = rf_mc.allPredicitions
         predictions_proba[:,i] = rf_mc.allPredicitions_prob[:,1] #Merger Probability
         for colImportance in range(len(cols)):
             rf_mc_df[cols[colImportance]][i] = rf_mc.feature_importances_[colImportance]
-        #summaryStats = ml.classificationPerformance(rf_mc.preds,rf_mc.reallabels)
         summaryStats = rfp.confusionMatrix2(df,rf_mc,threshold=thresh)
         for colStats in sumStatsItersDF.columns:
             sumStatsItersDF[colStats][i] = summaryStats[colStats]
-        #summaryStats = {'completeness': completeness, 'specificity': specificity,'risk':risk,'totalError':error,'ppv':ppv,'npv':npv}
 
     stop = timeit.default_timer()
 
