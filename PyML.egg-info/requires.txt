@@ -1,5 +1,4 @@
 scipy
 numpy
-pyfits
 scikit-learn
 matplotlib
