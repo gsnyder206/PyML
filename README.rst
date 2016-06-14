@@ -28,6 +28,7 @@ For Random Forest Classifications, usage:
 	'g','m20','mprime','i','d','a','c','gr_col','logMass','ssfr','f_gm20','d_gm20']
 
 	#Use pandas to read in data as a dataframe (df)
+	#df = pd.read_csv('DataFile.txt')
 
 	result, labels, label_probability = ml.randomForestMC(df,iterations=1000)
 	#result = summary statistics, feature importances (N iterations x N statistics/importances)
