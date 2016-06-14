@@ -482,7 +482,9 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     sumStatsItersDF = pd.DataFrame(summaryStatsIters)
 
     predictions = zeros((shape(df)[0],iterations))
+    predictions_df = pd.DataFrame(predictions)
     predictions_proba = zeros((shape(df)[0],iterations))
+    predictions_proba_df = pd.DataFrame(predictions_proba)
 
     dd = {}
     for colnames in cols:
@@ -498,8 +500,9 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
         print str(i+1)+'/'+str(iterations)
         rf_mc = randomForest(df,cols=cols,n_estimators=n_estimators,max_leaf_nodes=max_leaf_nodes,max_features=max_features,\
             trainDF=trainDF,testDF=testDF, traininglabel=traininglabel)
-        predictions[:,i] = rf_mc.allPredicitions #Labels
-        predictions_proba[:,i] = rf_mc.allPredicitions_prob[:,1] #Label Probability
+        print predictions[i]
+        predictions[i] = rf_mc.allPredicitions #Labels
+        predictions_proba[i] = rf_mc.allPredicitions_prob[:,1] #Label Probability
         for colImportance in range(len(cols)): #Populate array of feature importances
             rf_mc_df[cols[colImportance]][i] = rf_mc.feature_importances_[colImportance]
         summaryStats = confusionMatrix(df,rf_mc,threshold=thresh,traininglabel=traininglabel) #Calculate summary statistics
@@ -513,4 +516,4 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     result = pd.concat([rf_mc_df,sumStatsItersDF],axis=1,join_axes=[sumStatsItersDF.index])
     #Concatenate data frame with feature importances and summary statistics for every iteration of random forest
 
-    return result, predictions, predictions_proba
+    return result#, predictions, predictions_proba
