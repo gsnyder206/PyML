@@ -23,6 +23,7 @@ from scipy.sparse.linalg import eigsh
 from sklearn.ensemble import RandomForestClassifier
 import pickle
 import PyML
+import pandas as pd
 
 
 def whiten(data, A_basis=False):
@@ -67,7 +68,7 @@ def trainingSet(df,training_fraction=0.67):
 
     Parameters
     ----------
-    df: DataFrame or Dictionary
+    df: DataFrame
     Input catalog
 
 
@@ -188,44 +189,6 @@ class PCA:
         self.vectors = v
 
         return
-
-# class pcV:
-#     def __init__(self,data):
-#         '''
-#         Compute a Principal Component analysis p for a data set
-
-#         Parameters
-#         ----------
-#         data: matrix
-#         Input data (Nxk): N objects by k features
-
-#         A_pcv: Matrix
-#         Data (NxK) with Eigenvector solutions used to project data
-
-#         Returns
-#         -------
-#         Structure with the following keys:
-
-#         X: matrix
-#         Principal Component Coordinates
-#         '''
-#         npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt" 
-#         with open(npmorph_path, 'rb') as handle:
-#             A_pcv = pickle.loads(handle.read())
-        
-#         whiten_data = whiten(data) #,A_basis=A_pcv)
-#         A_white = whiten(A_pcv)
-#         pc1 = PCA(A_white)
-#         pc = zeros(shape(whiten_data))
-        
-#         for i in range(len(whiten_data[0])):
-#              for j in range(len(whiten_data[0])):
-#                 pc[:,i] = pc[:,i] + pc1.vectors[i][j]*whiten_data[:,j]
-
-#         self.X = pc
-#         self.vectors = pc1.vectors 
-#         self.values = pc1.values
-#         return
 
 class pcV:
     def __init__(self,data):
@@ -348,6 +311,46 @@ class diffusionMap:
 
         return
 
+def confusionMatrix(df,rfmc,threshold=0.5,traininglabel='mergerFlag'):
+    """
+    Calculate Summary Statistics (completeness,specificity,risk,error, PPV,NPV)
+
+    Parameters
+    ----------
+    df: DataFrame pandas
+    Basis catalog for which to Random Forest is trained upon
+
+    rfmc: function
+    Predicted labels for galaxies in df
+
+
+
+    Output
+    ----------
+    summaryStats: dictionary
+    Summary Statistics (completeness,specificity,risk,error, PPV,NPV)
+
+    """
+
+    tp = len(where((df[traininglabel].values == 1) & (rfmc.allPredicitions_prob[:,1] >= threshold))[0])
+    fp = len(where((df[traininglabel].values == 0) & (rfmc.allPredicitions_prob[:,1] >= threshold))[0])
+    fn = len(where((df[traininglabel].values == 1) & (rfmc.allPredicitions_prob[:,1] < threshold))[0])
+    tn = len(where((df[traininglabel].values == 0) & (rfmc.allPredicitions_prob[:,1] < threshold))[0])
+
+
+    completeness = 1.*tp/(tp+fn)
+    specificity = 1.*tn/(tn+fp)
+    risk = (1 - completeness) + (1 - specificity)
+    error = 1.*(fn+fp)/(tn+fp+tp+fn)
+    if tp+fp == 0:
+        ppv = 0
+    else:
+        ppv = 1.*tp/(tp+fp)
+    npv = 1.*tn/(tn+fn)
+
+    summaryStats = {'completeness': completeness, 'specificity': specificity,'risk':risk,'totalError':error,'ppv':ppv,'npv':npv}
+    return summaryStats
+
 class randomForest:
     def __init__(self,df,n_estimators=500,max_leaf_nodes=100,max_features=3,cols=None,trainDF=None,testDF=None, traininglabel='mergerFlag'):
         """
@@ -455,9 +458,14 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     Output
     ----------
-     - result = DataFrame with feature importance and summary statistics determined for every iteration
-     - Predicitions = Labels after defining random forest test on ALL data
-     - Predicitions_prob = Label probablility after defining random forest test on ALL data
+    result: Dataframe
+    Feature importance and summary statistics determined for every iteration
+
+    predicitions: array
+    Labels after defining random forest test on ALL data
+
+    predictions_proba: array
+    Label probablility after defining random forest test on ALL data
 
     """
 
@@ -486,16 +494,16 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     start = timeit.default_timer()
 
-    for i in range(iterations):
+    for i in range(iterations): #Begin niterations number of Random forest
         print str(i+1)+'/'+str(iterations)
         rf_mc = randomForest(df,cols=cols,n_estimators=n_estimators,max_leaf_nodes=max_leaf_nodes,max_features=max_features,\
             trainDF=trainDF,testDF=testDF, traininglabel=traininglabel)
-        predictions[:,i] = rf_mc.allPredicitions
-        predictions_proba[:,i] = rf_mc.allPredicitions_prob[:,1] #Merger Probability
-        for colImportance in range(len(cols)):
+        predictions[:,i] = rf_mc.allPredicitions #Labels
+        predictions_proba[:,i] = rf_mc.allPredicitions_prob[:,1] #Label Probability
+        for colImportance in range(len(cols)): #Populate array of feature importances
             rf_mc_df[cols[colImportance]][i] = rf_mc.feature_importances_[colImportance]
-        summaryStats = rfp.confusionMatrix2(df,rf_mc,threshold=thresh)
-        for colStats in sumStatsItersDF.columns:
+        summaryStats = confusionMatrix(df,rf_mc,threshold=thresh,traininglabel=traininglabel) #Calculate summary statistics
+        for colStats in sumStatsItersDF.columns: #Add summary statistics into dataframe containing all iterations
             sumStatsItersDF[colStats][i] = summaryStats[colStats]
 
     stop = timeit.default_timer()
@@ -503,5 +511,6 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     print "Random Forest took ", stop - start, " seconds"
 
     result = pd.concat([rf_mc_df,sumStatsItersDF],axis=1,join_axes=[sumStatsItersDF.index])
+    #Concatenate data frame with feature importances and summary statistics for every iteration of random forest
 
     return result, predictions, predictions_proba
