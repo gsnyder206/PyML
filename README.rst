@@ -30,8 +30,8 @@ For Random Forest Classifications, usage:
 	#Use pandas to read in data as a dataframe (df)
 
 	result, labels, label_probability = ml.randomForestMC(df,iterations=1000)
-	#result = summary statistics, feature importances
-	#labels = labels following random forest
-	#label_probability = probability of label following random forest
+	#result = summary statistics, feature importances (N iterations x N statistics/importances)
+	#labels = labels following random forest (N galaxies x N iterations)
+	#label_probability = probability of label following random forest (N galaxies x N iterations)
 
 
