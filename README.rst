@@ -29,6 +29,7 @@ For Random Forest Classifications, usage:
 
 	#Use pandas to read in data as a dataframe (df)
 	#df = pd.read_csv('DataFile.txt')
+	#df = pd.read_pickle('ps1_morph_spec_gz_pc.pkl')
 
 	result, labels, label_probability = ml.randomForestMC(df,iterations=1000)
 	#result = summary statistics, feature importances (N iterations x N statistics/importances)
