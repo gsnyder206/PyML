@@ -7,7 +7,7 @@ Usage:
 
 If catalog is a dictionary with the following parameters: ['C','M20','GINI','ASYM','MPRIME','I','D'], then 
 use these steps to project morphological data onto predefined PC eigenvectors and to classify galaxies based
-on the groups defined in Peth et al. 2015:
+on the groups defined in Peth et al. 2016:
 ::
 
 	from PyML import machinelearning as pyml
