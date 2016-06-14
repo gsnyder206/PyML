@@ -18,3 +18,20 @@ on the groups defined in Peth et al. 2015:
 	npmorph = pyml.dataMatrix(catalog,parameters) 
 	pc = pyml.pcV(npmorph) #Principal Components
 	groups  = cvx.convexHullClass(pc.X)	#Groups using convex hull classifier
+
+For Random Forest Classifications, usage:
+::
+	from PyML import machinelearning as pyml
+	import pandas as pd
+
+	cols = ['PC1','PC2','PC3','PC4','PC5','PC6','PC7',\
+	'g','m20','mprime','i','d','a','c','gr_col','logMass','ssfr','f_gm20','d_gm20']
+
+	#Use pandas to read in data as a dataframe (df)
+
+	result, labels, label_probability = ml.randomForestMC(df,iterations=1000)
+	#result = summary statistics, feature importances
+	#labels = labels following random forest
+	#label_probability = probability of label following random forest
+
+
