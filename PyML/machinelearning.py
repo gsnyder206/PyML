@@ -52,10 +52,11 @@ def whiten(data, A_basis=False):
         wvar = std(data,axis=0)
     else:
         whiten_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"candels_whiten_j_avg_std.txt"
-        with open(whiten_path, 'rb') as handle:
-            a_basis = pickle.loads(handle.read())
-        mu = a_basis['mean']
-        wvar = a_basis['std']
+        #with open(whiten_path, 'rb') as handle:
+        #    a_basis = pickle.loads(handle.read())
+        a_basis = load(whiten_path,encoding='bytes')
+        mu = a_basis[b'mean']
+        wvar = a_basis[b'std']
 
     whiten_data = zeros(shape(data))
     for p in range(len(mu)):
@@ -79,7 +80,8 @@ def trainingSet(df,training_fraction=0.67):
     '''
 
     import random
-    rows = random.sample(df.index, int(len(df)*training_fraction))
+
+    rows = random.sample(list(df.index), int(len(df)*training_fraction))
 
     df_67 = df.ix[rows] #training set
 
@@ -216,19 +218,20 @@ class pcV:
         #npmorph_path="PC_f125w_candels.txt" 
         #npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"npmorph_f125w_candels.txt"
         npmorph_path=PyML.__path__[0]+os.path.sep+"data"+os.path.sep+"PC_f125w_candels.txt"
-        with open(npmorph_path, 'rb') as handle:
-            pc1 = pickle.loads(handle.read())
-        
+        #with open(npmorph_path, 'rb') as handle:
+        #    pc1 = pickle.loads(handle.read())
+        pc1 = load(npmorph_path,encoding='bytes')
+
         whiten_data = whiten(data,A_basis=True)
         pc = zeros(shape(whiten_data))
         
         for i in range(len(whiten_data[0])):
              for j in range(len(whiten_data[0])):
-                pc[:,i] = pc[:,i] + pc1['vectors'][i][j]*whiten_data[:,j]
+                pc[:,i] = pc[:,i] + pc1[b'vectors'][i][j]*whiten_data[:,j]
 
         self.X = pc
-        self.vectors = pc1['vectors']
-        self.values = pc1['values']
+        self.vectors = pc1[b'vectors']
+        self.values = pc1[b'values']
         return
 
 class diffusionMap:
@@ -399,7 +402,6 @@ class randomForest:
         if trainDF==None or testDF==None:
             trainDF, testDF = trainingSet(df)
 
-
         train = trainDF[cols].values
         test = testDF[cols].values
         labels = trainDF[traininglabel]
@@ -497,7 +499,7 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     start = timeit.default_timer()
 
     for i in range(iterations): #Begin niterations number of Random forest
-        print str(i+1)+'/'+str(iterations)
+        print(str(i+1)+'/'+str(iterations))
         rf_mc = randomForest(df,cols=cols,n_estimators=n_estimators,max_leaf_nodes=max_leaf_nodes,max_features=max_features,\
             trainDF=trainDF,testDF=testDF, traininglabel=traininglabel)
         predictions_df[i] = rf_mc.allPredicitions #Labels
@@ -510,7 +512,7 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     stop = timeit.default_timer()
 
-    print "Random Forest took ", stop - start, " seconds"
+    print("Random Forest took ", stop - start, " seconds")
 
     result = pd.concat([rf_mc_df,sumStatsItersDF],axis=1,join_axes=[sumStatsItersDF.index])
     #Concatenate data frame with feature importances and summary statistics for every iteration of random forest

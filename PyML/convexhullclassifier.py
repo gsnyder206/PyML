@@ -122,7 +122,7 @@ def convexHullClass(data,radius=1e-2):
 
             if min(dist) > 20:
                 group_label[ngal] = -1 #outliers are put into group =-1, replaces groups 3,7
-                print "Galaxy ", ngal, " is an outlier"
+                print("Galaxy ", ngal, " is an outlier")
                 #continue
                 #groupALL.append(dist)
             else:
