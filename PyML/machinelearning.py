@@ -314,7 +314,7 @@ class diffusionMap:
 
         return
 
-def confusionMatrix(df,rfmc,threshold=0.5,traininglabel='mergerFlag'):
+def confusionMatrix(df,probs,threshold=0.5,traininglabel='mergerFlag'):
     """
     Calculate Summary Statistics (completeness,specificity,risk,error, PPV,NPV)
 
@@ -325,7 +325,8 @@ def confusionMatrix(df,rfmc,threshold=0.5,traininglabel='mergerFlag'):
 
     rfmc: function
     Predicted labels for galaxies in df
-
+    
+    probs:  predicted probabilities
 
 
     Output
@@ -335,12 +336,15 @@ def confusionMatrix(df,rfmc,threshold=0.5,traininglabel='mergerFlag'):
 
     """
 
-    tp = len(where((df[traininglabel].values == 1) & (rfmc.allPredicitions_prob[:,1] >= threshold))[0])
-    fp = len(where((df[traininglabel].values == 0) & (rfmc.allPredicitions_prob[:,1] >= threshold))[0])
-    fn = len(where((df[traininglabel].values == 1) & (rfmc.allPredicitions_prob[:,1] < threshold))[0])
-    tn = len(where((df[traininglabel].values == 0) & (rfmc.allPredicitions_prob[:,1] < threshold))[0])
+    tp = len(where((df[traininglabel].values == 1) & (probs[:,1] >= threshold))[0])
+    fp = len(where((df[traininglabel].values == 0) & (probs[:,1] >= threshold))[0])
+    fn = len(where((df[traininglabel].values == 1) & (probs[:,1] < threshold))[0])
+    tn = len(where((df[traininglabel].values == 0) & (probs[:,1] < threshold))[0])
 
+    Ntp= len(where(df[traininglabel].values == 1)[0])
+    Ntn= len(where(df[traininglabel].values == 0)[0])
 
+    
     completeness = 1.*tp/(tp+fn)
     specificity = 1.*tn/(tn+fp)
     risk = (1 - completeness) + (1 - specificity)
@@ -349,13 +353,20 @@ def confusionMatrix(df,rfmc,threshold=0.5,traininglabel='mergerFlag'):
         ppv = 0
     else:
         ppv = 1.*tp/(tp+fp)
-    npv = 1.*tn/(tn+fn)
 
-    summaryStats = {'completeness': completeness, 'specificity': specificity,'risk':risk,'totalError':error,'ppv':ppv,'npv':npv}
+    if tn+fn ==0:
+        npv=1.0
+    else:
+        npv = 1.*tn/(tn+fn)
+
+    tpr=(1.0*tp)/float(Ntp)
+    fpr=(1.0*fp)/float(Ntn)
+    
+    summaryStats = {'completeness': completeness, 'specificity': specificity,'risk':risk,'totalError':error,'ppv':ppv,'npv':npv,'tpr':tpr,'fpr':fpr,'thresh':threshold}
     return summaryStats
 
 class randomForest:
-    def __init__(self,df,n_estimators=500,max_leaf_nodes=100,max_features=3,cols=None,trainDF=None,testDF=None, traininglabel='mergerFlag'):
+    def __init__(self,df,cols=None,trainDF=None,testDF=None, traininglabel='mergerFlag',trainfrac=0.67,**kwargs):
         """
         Parameters
         ----------
@@ -400,13 +411,14 @@ class randomForest:
 
         
         if trainDF==None or testDF==None:
-            trainDF, testDF = trainingSet(df)
+            trainDF, testDF = trainingSet(df,training_fraction=trainfrac)
+            print(len(trainDF),len(testDF),len(df))
 
         train = trainDF[cols].values
         test = testDF[cols].values
         labels = trainDF[traininglabel]
 
-        clrf = RandomForestClassifier(n_jobs=2,n_estimators=n_estimators,max_leaf_nodes=max_leaf_nodes,oob_score=True,max_features=max_features)
+        clrf = RandomForestClassifier(n_jobs=-1,oob_score=True,class_weight='balanced_subsample',**kwargs)
         #Create random forest instance #
 
         clrf.fit(train,labels) #Train using visual classification training set
@@ -423,10 +435,14 @@ class randomForest:
         self.allPredicitions = array(clrf.predict(df[cols]))
         self.allPredicitions_prob = array(clrf.predict_proba(df[cols]))
 
+        self.clrf=clrf
+
+        self.testdf = testDF
+        
         return
 
-def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nodes=100,max_features=3,cols=None,\
-    trainDF=None,testDF=None, traininglabel='mergerFlag'):
+def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=1000,max_leaf_nodes=100,max_features=3,cols=None,\
+                   trainDF=None,testDF=None, traininglabel='mergerFlag',trainfrac=0.67,**kwargs):
     """
     Parameters
     ----------
@@ -480,7 +496,7 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     import numpy as np
     summaryStatsIters = {'completeness': np.zeros(iterations), 'specificity': np.zeros(iterations),'risk':np.zeros(iterations),\
-    'totalError':np.zeros(iterations),'ppv':np.zeros(iterations),'npv':np.zeros(iterations)}
+    'totalError':np.zeros(iterations),'ppv':np.zeros(iterations),'npv':np.zeros(iterations),'tpr':np.zeros(iterations),'fpr':np.zeros(iterations)}
     sumStatsItersDF = pd.DataFrame(summaryStatsIters)
 
     predictions = zeros((shape(df)[0],iterations))
@@ -498,18 +514,35 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
 
     start = timeit.default_timer()
 
+    rf_objs=[]
+
+    Nroc=20
+    threshes= np.logspace(-3.0,0,Nroc)
+    ROCstats = {'thresh':np.zeros((Nroc,iterations)), 'tpr':np.zeros((Nroc,iterations)),'fpr':np.zeros((Nroc,iterations))}
+    ROCtests = {'thresh':np.zeros((Nroc,iterations)), 'tpr':np.zeros((Nroc,iterations)),'fpr':np.zeros((Nroc,iterations))}
+    
     for i in range(iterations): #Begin niterations number of Random forest
         print(str(i+1)+'/'+str(iterations))
         rf_mc = randomForest(df,cols=cols,n_estimators=n_estimators,max_leaf_nodes=max_leaf_nodes,max_features=max_features,\
-            trainDF=trainDF,testDF=testDF, traininglabel=traininglabel)
+                             trainDF=trainDF,testDF=testDF, traininglabel=traininglabel,trainfrac=trainfrac,**kwargs)
         predictions_df[i] = rf_mc.allPredicitions #Labels
         predictions_proba_df[i] = rf_mc.allPredicitions_prob[:,1] #Label Probability
         for colImportance in range(len(cols)): #Populate array of feature importances
             rf_mc_df[cols[colImportance]][i] = rf_mc.feature_importances_[colImportance]
-        summaryStats = confusionMatrix(df,rf_mc,threshold=thresh,traininglabel=traininglabel) #Calculate summary statistics
+        summaryStats = confusionMatrix(df,rf_mc.allPredicitions_prob,threshold=thresh,traininglabel=traininglabel) #Calculate summary statistics
+        summaryStatsTest = confusionMatrix(rf_mc.testdf,rf_mc.pred_proba,threshold=thresh,traininglabel=traininglabel)
+        
         for colStats in sumStatsItersDF.columns: #Add summary statistics into dataframe containing all iterations
-            sumStatsItersDF[colStats][i] = summaryStats[colStats]
-
+            sumStatsItersDF[colStats][i] = summaryStatsTest[colStats]
+        rf_objs.append(rf_mc)
+        
+        for j,tv in enumerate(threshes):
+            ROC_results=confusionMatrix(df,rf_mc.allPredicitions_prob,threshold=tv,traininglabel=traininglabel)  #compute ROC curve
+            ROC_tests=confusionMatrix(rf_mc.testdf,rf_mc.pred_proba,threshold=tv,traininglabel=traininglabel)
+            for rs in ROCstats.keys():
+                ROCstats[rs][j][i]=ROC_results[rs]
+                ROCtests[rs][j][i]=ROC_tests[rs]
+    
     stop = timeit.default_timer()
 
     print("Random Forest took ", stop - start, " seconds")
@@ -517,4 +550,4 @@ def randomForestMC(df,iterations=1000, thresh=0.4, n_estimators=500,max_leaf_nod
     result = pd.concat([rf_mc_df,sumStatsItersDF],axis=1,join_axes=[sumStatsItersDF.index])
     #Concatenate data frame with feature importances and summary statistics for every iteration of random forest
 
-    return result, predictions_df, predictions_proba_df
+    return result, predictions_df, predictions_proba_df, rf_objs, ROCstats, ROCtests
